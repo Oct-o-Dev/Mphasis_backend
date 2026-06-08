@@ -1,0 +1,75 @@
+FUNCTION 1: User Management
+
+	This table maintains user roles and records.
+
+
+    TABLE 1.1: user_entity
+
+	COLUMNS:
+            user_id
+            username
+            password_hash
+            phone_no
+            email_id
+            first_name
+            last_name
+            role
+
+
+	PRIMARY KEY: user_id
+	FOREIGN KEY: requests
+
+FUNCTION 2: Service Request Management
+
+TABLE 2.1: requests
+
+	This table tracks all the created requests.
+
+	COLUMNS:
+		ticket_id
+		user_id
+		category
+		subcategory
+		description
+		status
+		date_of_submission
+		date_of_update
+
+	PRIMARY KEY: ticket_id
+	FOREIGN KEY:
+		user_id REFERENCES users(user_id) ON UPDATE CASCADE
+
+TABLE 2.2: services
+
+	This table tracks all the services done to the requests. Each request may have multiple services done to it (remarks may be added, it may be escalated or closed).
+
+	COLUMNS:
+		service_id
+		ticket_id
+		service_type
+		comment
+		old_status
+		new_status
+		date_of_service
+		cro_id
+
+	PRIMARY KEY: service_id
+	FOREIGN KEY:
+		ticket_id REFERENCES requests(ticket_id) ON UPDATE CASCADE
+		cro_id REFERENCES users(user_id) ON UPDATE CASCADE
+
+FUNCTION 3: Debit Card Support
+
+TABLE 3.1: debit_cards
+
+	This table tracks all the debit cards maintained by the user.
+
+	COLUMNS:
+		user_id
+		debit_card_number
+		status
+
+	PRIMARY KEY: debit_card_number
+	FOREIGN KEY:
+		user_id REFERENCES users(user_id) ON UPDATE CASCADE
+

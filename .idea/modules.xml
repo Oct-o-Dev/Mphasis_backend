@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/csp.iml" filepath="$PROJECT_DIR$/.idea/csp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Mphasis_backend.iml" filepath="$PROJECT_DIR$/.idea/Mphasis_backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/csp/csp.iml" filepath="$PROJECT_DIR$/csp/csp.iml" />
     </modules>
   </component>
 </project>

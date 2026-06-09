@@ -2,6 +2,7 @@ package com.mphasis.csp.service;
 
 
 
+import com.mphasis.csp.dto.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,5 +47,18 @@ public class UserService {
         user.setPhoneNo(req.getPhoneNo());
 
         return repo.save(user);
+    }
+    public User login(LoginRequest request) {
+
+        // ✅ Find user by email
+        User user = repo.findByEmailId(request.getEmailId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // ✅ Check password using BCrypt
+        if (!encoder.matches(request.getPassword(), user.getPasswordHash())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        return user;
     }
 }

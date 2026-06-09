@@ -31,8 +31,22 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
+                        //Allow Login/Register without auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .anyRequest().permitAll()   // ✅ for testing
+
+                        // ✅ ROLE-based access starts here
+
+                        //Only Admin
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                        //AGENT+ADMIN
+                        .requestMatchers("/api/agent/**").hasAnyRole("AGENT", "ADMIN")
+
+                        //only Customer
+                        .requestMatchers("/api/customer/**").hasRole("CUSTOMER")
+
+                        //everything else needs login
+                        .anyRequest().authenticated()   // ✅ for testing
                 );
 
         return http.build();

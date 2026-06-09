@@ -1,6 +1,6 @@
 package com.mphasis.csp.security;
 
-
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -14,22 +14,40 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    // ✅ Read from application.properties
     @Value("${jwt.secret}")
     private String secret;
 
-    // ✅ Convert String to Key
     private Key getKey() {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String email) {
-
+    // ✅ Generate token with role
+    public String generateToken(String email, String role) {
         return Jwts.builder()
                 .setSubject(email)
+                .claim("role", role)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 day
+                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    // ✅ ✅ NEW: Extract all claims
+    public Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    // ✅ ✅ NEW: Extract role
+    public String extractRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
+    }
+
+    // ✅ ✅ OPTIONAL: Extract email
+    public String extractEmail(String token) {
+        return extractAllClaims(token).getSubject();
     }
 }

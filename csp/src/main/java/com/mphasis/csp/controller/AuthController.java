@@ -4,8 +4,9 @@ package com.mphasis.csp.controller;
 
 
 
-import com.mphasis.csp.dto.LoginRequest;
-import com.mphasis.csp.dto.RegisterRequest;
+import ch.qos.logback.core.net.SyslogOutputStream;
+import com.mphasis.csp.dto.LoginRequestDTO;
+import com.mphasis.csp.dto.RegisterRequestDTO;
 import com.mphasis.csp.model.User;
 import com.mphasis.csp.security.JwtUtil;
 import com.mphasis.csp.service.UserService;
@@ -28,7 +29,7 @@ public class AuthController {
     private JwtUtil jwtUtil;
 
     @PostMapping("/register")
-    public String register(@RequestBody RegisterRequest request,
+    public String register(@RequestBody RegisterRequestDTO request,
                            HttpServletResponse response) {
 
         try {
@@ -56,7 +57,7 @@ public class AuthController {
 
     // ✅ ✅ LOGIN
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest request,
+    public String login(@RequestBody LoginRequestDTO request,
                         HttpServletResponse response) {
 
         try {
@@ -73,8 +74,8 @@ public class AuthController {
             cookie.setMaxAge(86400);
 
             response.addCookie(cookie);
-
-            return "✅ Login Successful";
+//            System.out.println(token);
+            return token;
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,4 +1,14 @@
 package com.mphasis.csp.dto;
 
-public record GetTicketRequestDTO() {
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
+@Data
+public class GetTicketRequestDTO {
+
+    @NotNull
+    private Long userId;
+
+    @NotNull
+    private Integer ticketId;
 }

@@ -4,7 +4,7 @@ package com.mphasis.csp.dto;
 import lombok.Data;
 
 @Data
-public class RegisterRequest {
+public class RegisterRequestDTO {
 
     private String username;
     private String firstName;

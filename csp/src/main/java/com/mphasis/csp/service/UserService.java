@@ -2,12 +2,12 @@ package com.mphasis.csp.service;
 
 
 
-import com.mphasis.csp.dto.LoginRequest;
+import com.mphasis.csp.dto.LoginRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.mphasis.csp.dto.RegisterRequest;
+import com.mphasis.csp.dto.RegisterRequestDTO;
 import com.mphasis.csp.model.User;
 import com.mphasis.csp.repository.UserRepository;
 
@@ -19,7 +19,7 @@ public class UserService {
 
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    public User register(RegisterRequest req) {
+    public User register(RegisterRequestDTO req) {
 
         // ✅ Check password match
         if (!req.getPassword().equals(req.getConfirmPassword())) {
@@ -48,7 +48,7 @@ public class UserService {
 
         return repo.save(user);
     }
-    public User login(LoginRequest request) {
+    public User login(LoginRequestDTO request) {
 
         // ✅ Find user by email
         User user = repo.findByEmailId(request.getEmailId())

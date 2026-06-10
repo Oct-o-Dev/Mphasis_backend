@@ -6,9 +6,11 @@ import java.util.List;
 
 public interface ITicketService {
 
-    com.mphasis.csp.dto.TicketResponseDTO raiseTicket(com.mphasis.csp.dto.RaiseTicketRequestDTO requestDTO);
+    TicketResponseDTO raiseTicket(RaiseTicketRequestDTO requestDTO, String email);
 
-    com.mphasis.csp.dto.TicketResponseDTO getTicket(GetTicketRequestDTO requestDTO);
+    TicketResponseDTO getTicket(GetTicketRequestDTO requestDTO, String email);
 
-    List<com.mphasis.csp.dto.TicketResponseDTO> getTickets(GetTicketsRequestDTO requestDTO);
+    List<TicketResponseDTO> getTickets(GetTicketsRequestDTO requestDTO, String email);
+
+    List<TicketResponseDTO> getAllTickets(GetAllTicketsRequestDTO requestDTO);
 }

@@ -7,8 +7,5 @@ import lombok.Data;
 public class GetTicketRequestDTO {
 
     @NotNull
-    private Long userId;
-
-    @NotNull
     private Integer ticketId;
 }

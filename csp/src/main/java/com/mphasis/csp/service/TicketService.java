@@ -5,8 +5,9 @@ import com.mphasis.csp.model.Ticket;
 import com.mphasis.csp.model.User;
 import com.mphasis.csp.repository.TicketRepository;
 import com.mphasis.csp.repository.UserRepository;
-import com.mphasis.csp.service.ITicketService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,13 +17,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TicketService implements ITicketService {
 
-    private final TicketRepository ticketDAO;
-    private final UserRepository userDAO;
+    @Autowired
+    private final TicketRepository ticketRepository;
+
+    @Autowired
+    private final UserRepository userRepository;
 
     @Override
-    public com.mphasis.csp.dto.TicketResponseDTO raiseTicket(com.mphasis.csp.dto.RaiseTicketRequestDTO dto) {
+    public TicketResponseDTO raiseTicket(RaiseTicketRequestDTO dto, String email) {
 
-        User user = userDAO.findById(dto.getUserId())
+        User user = userRepository.findByEmailId(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Ticket ticket = Ticket.builder()
@@ -32,17 +36,17 @@ public class TicketService implements ITicketService {
                 .description(dto.getDescription())
                 .build();
 
-        Ticket saved = ticketDAO.save(ticket);
+        Ticket saved = ticketRepository.save(ticket);
         return mapToDTO(saved);
     }
 
     @Override
-    public com.mphasis.csp.dto.TicketResponseDTO getTicket(GetTicketRequestDTO dto) {
+    public TicketResponseDTO getTicket(GetTicketRequestDTO dto, String email) {
 
-        User user = userDAO.findById(dto.getUserId())
+        User user = userRepository.findByEmailId(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Ticket ticket = ticketDAO
+        Ticket ticket = ticketRepository
                 .findByTicketIdAndUser(dto.getTicketId(), user)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
@@ -50,19 +54,28 @@ public class TicketService implements ITicketService {
     }
 
     @Override
-    public List<com.mphasis.csp.dto.TicketResponseDTO> getTickets(GetTicketsRequestDTO dto) {
+    public List<TicketResponseDTO> getTickets(GetTicketsRequestDTO dto, String email) {
 
-        User user = userDAO.findById(dto.getUserId())
+        User user = userRepository.findByEmailId(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return ticketDAO.findByUser(user)
+        return ticketRepository.findByUser(user)
                 .stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
-    private com.mphasis.csp.dto.TicketResponseDTO mapToDTO(Ticket ticket) {
-        return com.mphasis.csp.dto.TicketResponseDTO.builder()
+    @Override
+    public List<TicketResponseDTO> getAllTickets(GetAllTicketsRequestDTO dto) {
+
+        return ticketRepository.findAll(Sort.by("dateOfSubmission").descending())
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private TicketResponseDTO mapToDTO(Ticket ticket) {
+        return TicketResponseDTO.builder()
                 .ticketId(ticket.getTicketId())
                 .userId(ticket.getUser().getUserId())
                 .category(ticket.getTicketCategory())

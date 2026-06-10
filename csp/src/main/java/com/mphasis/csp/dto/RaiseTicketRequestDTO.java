@@ -10,9 +10,6 @@ import lombok.Data;
 public class RaiseTicketRequestDTO {
 
     @NotNull
-    private Long userId;
-
-    @NotNull
     private TicketCategory category;
 
     @NotNull

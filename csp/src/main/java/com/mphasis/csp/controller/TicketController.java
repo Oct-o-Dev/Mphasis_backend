@@ -56,7 +56,4 @@ public class TicketController {
 
         return ticketService.getAllTickets(requestDTO);
     }
-
-
-
 }

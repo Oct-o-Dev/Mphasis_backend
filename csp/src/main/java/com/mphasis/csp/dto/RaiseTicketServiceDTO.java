@@ -12,7 +12,7 @@ public class RaiseTicketServiceDTO {
     private Integer ticketId;
 
     @NotNull
-    private ServiceType serviceType;
+    private ServiceAction serviceAction;
 
     @NotNull
     private TicketStatus newStatus;

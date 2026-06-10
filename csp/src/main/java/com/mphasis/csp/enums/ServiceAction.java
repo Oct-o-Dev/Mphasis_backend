@@ -1,6 +1,6 @@
 package com.mphasis.csp.enums;
 
-public enum ServiceType {
+public enum ServiceAction {
     COMMENT,
     RETURN,
     CLOSE,

@@ -46,7 +46,7 @@ public class SecurityConfig {
 
                         // Role-based access
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/agent/**").hasAnyRole("AGENT", "ADMIN")
+                        .requestMatchers("/api/cro/**").hasAnyRole("CRO", "ADMIN")
                         .requestMatchers("/api/customer/**").hasRole("CUSTOMER")
 
                         // Everything else needs authentication

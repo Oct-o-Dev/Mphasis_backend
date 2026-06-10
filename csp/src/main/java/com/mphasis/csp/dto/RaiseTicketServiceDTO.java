@@ -16,6 +16,6 @@ public class RaiseTicketServiceDTO {
 
     @NotNull
     private TicketStatus newStatus;
-
+    
     private String comment;
 }

@@ -1,6 +1,6 @@
 package com.mphasis.csp.dto;
 
-import com.mphasis.csp.enums.ServiceType;
+import com.mphasis.csp.enums.ServiceAction;
 import com.mphasis.csp.enums.TicketStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -12,7 +12,7 @@ public class RaiseTicketServiceDTO {
     private Integer ticketId;
 
     @NotNull
-    private ServiceType serviceType;
+    private ServiceAction serviceAction;
 
     @NotNull
     private TicketStatus newStatus;

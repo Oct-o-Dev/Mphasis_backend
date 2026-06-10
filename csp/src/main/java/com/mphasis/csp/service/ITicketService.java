@@ -14,4 +14,9 @@ public interface ITicketService {
     List<TicketResponseDTO> getTickets(GetTicketsRequestDTO requestDTO, String email);
 
     List<TicketResponseDTO> getAllTickets(GetAllTicketsRequestDTO requestDTO);
+
+
+    // CRO Raise Service (NEW METHOD)
+    TicketResponseDTO raiseService(RaiseServiceDTO dto);
+
 }

@@ -28,7 +28,7 @@ public class TicketService {
     @JoinColumn(name = "ticket_id", nullable = false)
     private com.mphasis.csp.model.Ticket ticket;
 
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "service_type", nullable = false, length = 30)
     private ServiceAction serviceAction;

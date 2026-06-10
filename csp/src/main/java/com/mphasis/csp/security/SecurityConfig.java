@@ -45,6 +45,7 @@ public class SecurityConfig {
 
                         // Public endpoints
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/cro/raise-service").permitAll()
                         .requestMatchers("/api/cards/**").hasAnyRole("CUSTOMER","CRO","ADMIN")
 
 

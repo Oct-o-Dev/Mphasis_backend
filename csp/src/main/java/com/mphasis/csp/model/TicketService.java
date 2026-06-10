@@ -1,6 +1,6 @@
 package com.mphasis.csp.model;
 
-import com.mphasis.csp.enums.ServiceType;
+import com.mphasis.csp.enums.ServiceAction;
 import com.mphasis.csp.enums.TicketStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -31,7 +31,7 @@ public class TicketService {
     @NotBlank
     @Enumerated(EnumType.STRING)
     @Column(name = "service_type", nullable = false, length = 30)
-    private ServiceType serviceType;
+    private ServiceAction serviceAction;
 
     @Column(name = "comment", columnDefinition = "TEXT")
     private String comment;

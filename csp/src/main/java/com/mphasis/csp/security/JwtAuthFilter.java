@@ -28,6 +28,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+        // ✅ ✅ ADD THIS BLOCK (VERY IMPORTANT - AT TOP)
+        String path = request.getServletPath();
+
+        if (path.equals("/api/customer/ticket/service")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        // ✅ ✅ END
+
         String authHeader = request.getHeader("Authorization");
 
         // ✅ If no token, skip
@@ -42,7 +51,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String email = jwtUtil.extractEmail(token);
             String role = jwtUtil.extractRole(token);
 
-            // ✅ CRITICAL: add ROLE_ prefix
+            // ✅ add ROLE_ prefix
             List<SimpleGrantedAuthority> authorities = List.of(
                     new SimpleGrantedAuthority("ROLE_" + role)
             );
@@ -51,8 +60,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     new UsernamePasswordAuthenticationToken(email, null, authorities);
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
-
 
         } catch (Exception e) {
             // invalid token → ignore and continue

@@ -63,6 +63,16 @@ public class Ticket {
     @Builder.Default
     private List<TicketService> services = new ArrayList<>();
 
+
+    // ✅ ✅ ✅ NEW RELATION ADDED (ServiceAction)
+    @OneToMany(
+            mappedBy = "ticket",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    //@Builder.Default
+    //private List<ServiceActionEntity> serviceActions = new ArrayList<>();
+
     @PrePersist
     public void prePersist() {
         if (dateOfSubmission == null) {

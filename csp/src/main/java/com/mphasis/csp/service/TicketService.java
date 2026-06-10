@@ -5,7 +5,6 @@ import com.mphasis.csp.model.Ticket;
 import com.mphasis.csp.model.User;
 import com.mphasis.csp.repository.TicketRepository;
 import com.mphasis.csp.repository.UserRepository;
-import com.mphasis.csp.service.ITicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

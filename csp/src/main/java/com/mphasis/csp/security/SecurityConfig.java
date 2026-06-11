@@ -22,30 +22,30 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    // ✅ Inject JWT filter
+    // Inject JWT filter
     private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                // ✅ Disable CSRF
+                //  Disable CSRF
                 .csrf(csrf -> csrf.disable())
 
-                // ✅ Enable CORS
+                //  Enable CORS
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-                // ✅ Stateless session (JWT)
+                //  Stateless session (JWT)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                // ✅ Authorization rules
+                //  Authorization rules
                 .authorizeHttpRequests(auth -> auth
 
                         // Public endpoints
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/cro/raise-service").permitAll()
+                        /*(remove this).requestMatchers("/api/cro/raise-service").permitAll() */
                         .requestMatchers("/api/cards/**").hasAnyRole("CUSTOMER","CRO","ADMIN")
 
 
@@ -58,14 +58,14 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                // ✅ CRITICAL: Add JWT filter here
+                //  CRITICAL: Add JWT filter here
                 .addFilterBefore(jwtAuthFilter,
                         UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // ✅ CORS config
+    //  CORS config
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 

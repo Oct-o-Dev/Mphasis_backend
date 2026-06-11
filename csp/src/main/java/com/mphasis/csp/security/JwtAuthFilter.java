@@ -28,18 +28,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        // ✅ ✅ FIXED: CORRECT CRO API BYPASS
+        // FIXED: CORRECT CRO API BYPASS
         String path = request.getServletPath();
 
-        if (path.equals("/api/cro/raise-service")) {
+       /* if (path.equals("/api/cro/raise-service")) {
             filterChain.doFilter(request, response);
             return;
-        }
+        }*/
 
-        // ✅ Read Authorization Header
+        //  Read Authorization Header
         String authHeader = request.getHeader("Authorization");
 
-        // ✅ If no token, skip
+        // If no token, skip
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -51,16 +51,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String email = jwtUtil.extractEmail(token);
             String role = jwtUtil.extractRole(token);
 
-            // ✅ Add ROLE_ prefix
-            List<SimpleGrantedAuthority> authorities = List.of(
-                    new SimpleGrantedAuthority("ROLE_" + role)
-            );
+            // Only set authentication if not already set
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(email, null, authorities);
+                List<SimpleGrantedAuthority> authorities = List.of(
+                        new SimpleGrantedAuthority("ROLE_" + role)
+                );
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(email, null, authorities);
 
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         } catch (Exception e) {
             // invalid token → ignore and continue
             e.printStackTrace();

@@ -8,18 +8,18 @@ import lombok.Data;
 @Data
 public class RaiseServiceDTO {
 
-    // ✅ Ticket ID (jis ticket pe action lena hai)
+    // Ticket ID (jis ticket pe action lena hai)
     private Integer ticketId;
 
-    // ✅ Action type (RETURN, ESCALATE, CLOSE, COMMENT)
+    // Action type (RETURN, ESCALATE, CLOSE, COMMENT)
     private ServiceAction serviceType;
 
-    // ✅ CRO ka comment
+    // CRO ka comment
     private String comment;
 
-    // ✅ Ticket ka updated status (OPEN, CLOSED, etc.)
+    // Ticket ka updated status (OPEN, CLOSED, etc.)
     private TicketStatus newStatus;
 
-    // ✅ jis CRO ne action liya uska user ID
-    private Integer croId;
+    /*// jis CRO ne action liya uska user ID
+    private Integer croId;*/
 }

@@ -13,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -96,7 +99,7 @@ public class TicketService implements ITicketService {
     }
 
     @Override
-    public TicketResponseDTO raiseService(RaiseServiceDTO dto) {
+    public TicketResponseDTO raiseService(RaiseServiceDTO dto, String email) {
 
         //  Step 1: Ticket fetch
         Ticket ticket = ticketRepository.findById(dto.getTicketId())
@@ -105,10 +108,9 @@ public class TicketService implements ITicketService {
         //  Step 2: Old status
         TicketStatus oldStatus = ticket.getTicketStatus();
 
-        // Step 3: Create new service record
+        //  Step 3: Create new service record
         com.mphasis.csp.model.TicketService service =
                 new com.mphasis.csp.model.TicketService();
-
 
         service.setTicket(ticket);
         service.setServiceAction(dto.getServiceType());
@@ -117,16 +119,16 @@ public class TicketService implements ITicketService {
         service.setNewStatus(dto.getNewStatus());
         service.setDateOfService(LocalDateTime.now());
 
-        //  Step 4: CRO fetch
-        User cro = userRepository.findById(dto.getCroId().longValue())
-                .orElseThrow(() -> new RuntimeException("CRO not found"));
+        //  FETCH USER FROM DB
+        User cro = userRepository.findByEmailId(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        service.setCro(cro);
+        service.setCro(cro);  //  auto-set cro_id
 
-        //  Step 5: SAVE into services table
+        // Step 5: SAVE into services table
         ticketServiceRepository.save(service);
 
-        // Step 6: Update ticket status
+        //  Step 6: Update ticket status
         ticket.setTicketStatus(dto.getNewStatus());
 
         Ticket updated = ticketRepository.save(ticket);

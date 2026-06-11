@@ -1,4 +1,4 @@
-package com.mphasis.csp.dto;
+package com.mphasis.csp.dto.response;
 
 import lombok.Builder;
 import lombok.Data;

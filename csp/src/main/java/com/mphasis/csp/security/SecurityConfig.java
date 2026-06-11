@@ -1,4 +1,3 @@
-
 package com.mphasis.csp.security;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    // ✅ Inject JWT filter
     private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
@@ -40,25 +40,21 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-
                 // Authorization
                 .authorizeHttpRequests(auth -> auth
 
-                        // Public
+                        // Public endpoints
                         .requestMatchers("/api/auth/**").permitAll()
-                        /*(remove this).requestMatchers("/api/cro/raise-service").permitAll() */
                         .requestMatchers("/api/cards/**").hasAnyRole("CUSTOMER","CRO","ADMIN")
 
-
-                        // Roles
+                        // Role-based access
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/cro/**").hasAnyRole("CRO", "ADMIN")
                         .requestMatchers("/api/customer/**").hasRole("CUSTOMER")
 
-                        // All others
+                        // Everything else needs authentication
                         .anyRequest().authenticated()
                 )
-
 
                 // JWT filter
                 .addFilterBefore(jwtAuthFilter,
@@ -74,9 +70,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(
-                List.of("http://localhost:4200", "http://127.0.0.1:5500")
-        );
+        config.setAllowedOrigins(List.of("http://127.0.0.1:5500"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of("*"));
 

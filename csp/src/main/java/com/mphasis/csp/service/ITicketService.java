@@ -1,7 +1,7 @@
 package com.mphasis.csp.service;
 
-import com.mphasis.csp.dto.*;
-import com.mphasis.csp.model.Ticket;
+import com.mphasis.csp.dto.request.*;
+import com.mphasis.csp.dto.response.TicketResponseDTO;
 
 import java.util.List;
 
@@ -14,8 +14,4 @@ public interface ITicketService {
     List<TicketResponseDTO> getTickets(GetTicketsRequestDTO requestDTO, String email);
 
     List<TicketResponseDTO> getAllTickets(GetAllTicketsRequestDTO requestDTO);
-
-    // CRO Raise Service (NEW METHOD)
-    TicketResponseDTO raiseService(RaiseServiceDTO dto, String email);
-
 }

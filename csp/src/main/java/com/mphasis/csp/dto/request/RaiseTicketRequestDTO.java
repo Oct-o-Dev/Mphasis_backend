@@ -1,4 +1,4 @@
-package com.mphasis.csp.dto;
+package com.mphasis.csp.dto.request;
 
 import com.mphasis.csp.enums.TicketCategory;
 import com.mphasis.csp.enums.TicketSubcategory;

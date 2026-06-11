@@ -1,3 +1,4 @@
+
 package com.mphasis.csp.security;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    // Inject JWT filter
     private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
@@ -35,30 +35,32 @@ public class SecurityConfig {
                 //  Enable CORS
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-                //  Stateless session (JWT)
+                // Stateless Session (JWT)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                //  Authorization rules
+
+                // Authorization
                 .authorizeHttpRequests(auth -> auth
 
-                        // Public endpoints
+                        // Public
                         .requestMatchers("/api/auth/**").permitAll()
                         /*(remove this).requestMatchers("/api/cro/raise-service").permitAll() */
                         .requestMatchers("/api/cards/**").hasAnyRole("CUSTOMER","CRO","ADMIN")
 
 
-                        // Role-based access
+                        // Roles
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/cro/**").hasAnyRole("CRO", "ADMIN")
                         .requestMatchers("/api/customer/**").hasRole("CUSTOMER")
 
-                        // Everything else needs authentication
+                        // All others
                         .anyRequest().authenticated()
                 )
 
-                //  CRITICAL: Add JWT filter here
+
+                // JWT filter
                 .addFilterBefore(jwtAuthFilter,
                         UsernamePasswordAuthenticationFilter.class);
 
@@ -72,7 +74,9 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://127.0.0.1:5500"));
+        config.setAllowedOrigins(
+                List.of("http://localhost:4200", "http://127.0.0.1:5500")
+        );
         config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of("*"));
 

@@ -1,10 +1,11 @@
 package com.mphasis.csp.controller;
 
+import com.mphasis.csp.service.ForgotPasswordService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 
-
-
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.mphasis.csp.dto.LoginRequestDTO;
 import com.mphasis.csp.dto.RegisterRequestDTO;
 import com.mphasis.csp.model.User;
@@ -14,7 +15,6 @@ import com.mphasis.csp.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,10 +28,12 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private ForgotPasswordService service;
+
     @PostMapping("/register")
     public String register(@RequestBody RegisterRequestDTO request,
                            HttpServletResponse response) {
-
         try {
             // ✅ Save user
             User user = userService.register(request);
@@ -59,7 +61,6 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@RequestBody LoginRequestDTO request,
                         HttpServletResponse response) {
-
         try {
             // ✅ Authenticate user
             User user = userService.login(request);
@@ -74,7 +75,6 @@ public class AuthController {
             cookie.setMaxAge(86400);
 
             response.addCookie(cookie);
-//            System.out.println(token);
             return token;
 
         } catch (Exception e) {
@@ -82,5 +82,23 @@ public class AuthController {
             return "❌ Error: " + e.getMessage();
         }
 
+    }
+
+    //Sents the email to the user with the token integrated to it
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(
+            @RequestParam String email) {
+
+        service.forgotPassword(email);
+        return ResponseEntity.ok("Reset link sent");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(
+            @RequestParam String token,
+            @RequestParam String newPassword) {
+
+        service.resetPassword(token, newPassword);
+        return ResponseEntity.ok("Password updated");
     }
 }

@@ -1,12 +1,15 @@
 package com.mphasis.csp.controller;
 
-import com.mphasis.csp.dto.*;
+import com.mphasis.csp.dto.request.GetAllTicketsRequestDTO;
+import com.mphasis.csp.dto.request.GetTicketRequestDTO;
+import com.mphasis.csp.dto.request.GetTicketsRequestDTO;
+import com.mphasis.csp.dto.request.RaiseTicketRequestDTO;
+import com.mphasis.csp.dto.response.TicketResponseDTO;
 import com.mphasis.csp.service.ITicketService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

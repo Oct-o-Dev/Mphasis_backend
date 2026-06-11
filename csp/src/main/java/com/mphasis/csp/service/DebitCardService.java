@@ -1,7 +1,7 @@
 package com.mphasis.csp.service;
 
-import com.mphasis.csp.dto.DebitCardResponseDTO;
-import com.mphasis.csp.dto.UpdateDebitCardRequestDTO;
+import com.mphasis.csp.dto.response.DebitCardResponseDTO;
+import com.mphasis.csp.dto.request.UpdateDebitCardRequestDTO;
 import com.mphasis.csp.enums.DebitCardStatus;
 import com.mphasis.csp.model.DebitCard;
 import com.mphasis.csp.model.User;

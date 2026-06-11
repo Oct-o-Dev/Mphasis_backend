@@ -1,4 +1,4 @@
-package com.mphasis.csp.dto;
+package com.mphasis.csp.dto.request;
 
 import com.mphasis.csp.enums.ServiceAction;
 import com.mphasis.csp.enums.TicketStatus;
@@ -6,7 +6,7 @@ import com.mphasis.csp.enums.TicketStatus;
 import lombok.Data;
 
 @Data
-public class RaiseServiceDTO {
+public class RaiseServiceRequestDTO {
 
     // Ticket ID (jis ticket pe action lena hai)
     private Integer ticketId;

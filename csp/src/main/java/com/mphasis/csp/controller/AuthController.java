@@ -5,16 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.mphasis.csp.dto.LoginRequestDTO;
-import com.mphasis.csp.dto.RegisterRequestDTO;
+import com.mphasis.csp.dto.request.LoginRequestDTO;
+import com.mphasis.csp.dto.request.RegisterRequestDTO;
 import com.mphasis.csp.model.User;
 import com.mphasis.csp.security.JwtUtil;
 import com.mphasis.csp.service.UserService;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -84,7 +82,7 @@ public class AuthController {
     }
 
     //Sents the email to the user with the token integrated to it
-    @PostMapping("/forgot-password")
+    @PostMapping("/forgotPassword")
     public ResponseEntity<String> forgotPassword(
             @RequestParam String email) {
 
@@ -92,7 +90,7 @@ public class AuthController {
         return ResponseEntity.ok("Reset link sent");
     }
 
-    @PostMapping("/reset-password")
+    @PostMapping("/resetPassword")
     public ResponseEntity<String> resetPassword(
             @RequestParam String token,
             @RequestParam String newPassword) {

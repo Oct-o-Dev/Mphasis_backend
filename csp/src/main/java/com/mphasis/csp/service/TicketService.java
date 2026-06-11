@@ -1,25 +1,21 @@
 package com.mphasis.csp.service;
 
-import com.mphasis.csp.dto.*;
+import com.mphasis.csp.dto.request.*;
+import com.mphasis.csp.dto.response.TicketResponseDTO;
 import com.mphasis.csp.model.Ticket;
 import com.mphasis.csp.model.User;
 import com.mphasis.csp.repository.TicketRepository;
 import com.mphasis.csp.repository.UserRepository;
-//import com.mphasis.csp.model.TicketService;
 import com.mphasis.csp.repository.TicketServiceRepository;
-import com.mphasis.csp.enums.TicketStatus;
-import com.mphasis.csp.dto.RaiseServiceDTO;
+import com.mphasis.csp.util.MapToTicketResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +44,7 @@ public class TicketService implements ITicketService {
                 .build();
 
         Ticket saved = ticketRepository.save(ticket);
-        return mapToDTO(saved);
+        return MapToTicketResponseDTO.map(saved);
     }
 
     @Override
@@ -61,7 +57,7 @@ public class TicketService implements ITicketService {
                 .findByTicketIdAndUser(dto.getTicketId(), user)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
-        return mapToDTO(ticket);
+        return MapToTicketResponseDTO.map(ticket);
     }
 
     @Override
@@ -72,7 +68,7 @@ public class TicketService implements ITicketService {
 
         return ticketRepository.findByUser(user)
                 .stream()
-                .map(this::mapToDTO)
+                .map(MapToTicketResponseDTO::map)
                 .collect(Collectors.toList());
     }
 
@@ -81,59 +77,7 @@ public class TicketService implements ITicketService {
 
         return ticketRepository.findAll(Sort.by("dateOfSubmission").descending())
                 .stream()
-                .map(this::mapToDTO)
+                .map(MapToTicketResponseDTO::map)
                 .collect(Collectors.toList());
     }
-
-    private TicketResponseDTO mapToDTO(Ticket ticket) {
-        return TicketResponseDTO.builder()
-                .ticketId(ticket.getTicketId())
-                .userId(ticket.getUser().getUserId())
-                .category(ticket.getTicketCategory())
-                .subcategory(ticket.getTicketSubcategory())
-                .description(ticket.getDescription())
-                .status(ticket.getTicketStatus())
-                .dateOfSubmission(ticket.getDateOfSubmission())
-                .dateOfUpdate(ticket.getDateOfUpdate())
-                .build();
-    }
-
-    @Override
-    public TicketResponseDTO raiseService(RaiseServiceDTO dto, String email) {
-
-        //  Step 1: Ticket fetch
-        Ticket ticket = ticketRepository.findById(dto.getTicketId())
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
-
-        //  Step 2: Old status
-        TicketStatus oldStatus = ticket.getTicketStatus();
-
-        //  Step 3: Create new service record
-        com.mphasis.csp.model.TicketService service =
-                new com.mphasis.csp.model.TicketService();
-
-        service.setTicket(ticket);
-        service.setServiceAction(dto.getServiceType());
-        service.setComment(dto.getComment());
-        service.setOldStatus(oldStatus);
-        service.setNewStatus(dto.getNewStatus());
-        service.setDateOfService(LocalDateTime.now());
-
-        //  FETCH USER FROM DB
-        User cro = userRepository.findByEmailId(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        service.setCro(cro);  //  auto-set cro_id
-
-        // Step 5: SAVE into services table
-        ticketServiceRepository.save(service);
-
-        //  Step 6: Update ticket status
-        ticket.setTicketStatus(dto.getNewStatus());
-
-        Ticket updated = ticketRepository.save(ticket);
-
-        return mapToDTO(updated);
-    }
-
 }

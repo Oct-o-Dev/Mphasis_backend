@@ -2,12 +2,12 @@ package com.mphasis.csp.service;
 
 
 
-import com.mphasis.csp.dto.LoginRequestDTO;
+import com.mphasis.csp.dto.request.LoginRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.mphasis.csp.dto.RegisterRequestDTO;
+import com.mphasis.csp.dto.request.RegisterRequestDTO;
 import com.mphasis.csp.model.User;
 import com.mphasis.csp.repository.UserRepository;
 

@@ -1,4 +1,4 @@
-package com.mphasis.csp.dto;
+package com.mphasis.csp.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

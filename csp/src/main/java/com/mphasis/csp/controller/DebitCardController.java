@@ -1,8 +1,7 @@
 package com.mphasis.csp.controller;
 
-import com.mphasis.csp.dto.DebitCardResponseDTO;
-import com.mphasis.csp.dto.UpdateDebitCardRequestDTO;
-import com.mphasis.csp.model.DebitCard;
+import com.mphasis.csp.dto.response.DebitCardResponseDTO;
+import com.mphasis.csp.dto.request.UpdateDebitCardRequestDTO;
 import com.mphasis.csp.service.IDebitCardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -19,7 +18,7 @@ public class DebitCardController {
 
     private final IDebitCardService debitCardService;
 
-    // ✅ Create Card (CUSTOMER only)
+    // Create Card (CUSTOMER only)
     @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping
     public ResponseEntity<DebitCardResponseDTO> createCard(Authentication authentication) {

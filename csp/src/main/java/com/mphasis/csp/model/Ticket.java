@@ -47,7 +47,7 @@ public class Ticket {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
-    private com.mphasis.csp.enums.TicketStatus ticketStatus = com.mphasis.csp.enums.TicketStatus.OPEN;
+    private TicketStatus ticketStatus = TicketStatus.PENDING_CRO;
 
     @Column(name = "date_of_submission", nullable = false, updatable = false)
     private LocalDateTime dateOfSubmission;
@@ -62,16 +62,6 @@ public class Ticket {
     )
     @Builder.Default
     private List<TicketService> services = new ArrayList<>();
-
-
-    // ✅ ✅ ✅ NEW RELATION ADDED (ServiceAction)
-    @OneToMany(
-            mappedBy = "ticket",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    //@Builder.Default
-    //private List<ServiceActionEntity> serviceActions = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {

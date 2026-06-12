@@ -13,6 +13,4 @@ public class RegisterRequestDTO {
     private String password;
     private String confirmPassword;
     private String phoneNo;
-
-
 }

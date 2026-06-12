@@ -3,6 +3,7 @@ package com.mphasis.csp.service;
 import com.mphasis.csp.dto.request.RaiseServiceRequestDTO;
 import com.mphasis.csp.dto.response.TicketResponseDTO;
 import com.mphasis.csp.enums.TicketStatus;
+import com.mphasis.csp.exception.InvalidTicketStatusUpdateException;
 import com.mphasis.csp.model.Ticket;
 import com.mphasis.csp.model.User;
 import com.mphasis.csp.repository.TicketRepository;
@@ -29,38 +30,36 @@ public class TicketServiceService implements ITicketServiceService {
     TicketServiceRepository ticketServiceRepository;
 
     @Override
-    public TicketResponseDTO raiseService(RaiseServiceRequestDTO dto, String email) {
+    public TicketResponseDTO raiseService(RaiseServiceRequestDTO dto, String email) throws InvalidTicketStatusUpdateException {
 
-        //  Step 1: Ticket fetch
+        //  Fetch old status from linked ticket
         Ticket ticket = ticketRepository.findById(dto.getTicketId())
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
-
-        //  Step 2: Old status
         TicketStatus oldStatus = ticket.getTicketStatus();
+        TicketStatus newStatus = oldStatus.getStatusUpdate(dto.getServiceAction());
 
-        //  Step 3: Create new service record
+        //  Create new service record
         com.mphasis.csp.model.TicketService service =
                 new com.mphasis.csp.model.TicketService();
 
         service.setTicket(ticket);
-        service.setServiceAction(dto.getServiceType());
+        service.setServiceAction(dto.getServiceAction());
         service.setComment(dto.getComment());
         service.setOldStatus(oldStatus);
-        service.setNewStatus(dto.getNewStatus());
+        service.setNewStatus(newStatus);
         service.setDateOfService(LocalDateTime.now());
 
-        //  FETCH USER FROM DB
+        //  Fetch linked user that raised this service (Customer, CRO or Manager)
         User cro = userRepository.findByEmailId(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         service.setCro(cro);  //  auto-set cro_id
 
-        // Step 5: SAVE into services table
+        // Log service
         ticketServiceRepository.save(service);
 
-        //  Step 6: Update ticket status
-        ticket.setTicketStatus(dto.getNewStatus());
-
+        //  Update ticket status on DB
+        ticket.setTicketStatus(newStatus);
         Ticket updated = ticketRepository.save(ticket);
 
         return MapToTicketResponseDTO.map(updated);

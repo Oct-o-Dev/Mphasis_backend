@@ -78,12 +78,12 @@ public class TicketServiceService implements ITicketServiceService {
 
         //Assignment logic added
         if(action == ServiceAction.ESCALATE_TO_CRO){
-            User croUser=findLeastLoadedUser("CRO");
+            User croUser= findLeastLoadedUserByRole("CRO");
             ticket.setAssignedTo(croUser);
         }
         else if(action==ServiceAction.ESCALATE_TO_MANAGER){
-            User adminUser=findLeastLoadedUser("ADMIN");
-            ticket.setAssignedTo(adminUser);
+            User managerUser=findLeastLoadedUserByRole("ADMIN");
+            ticket.setAssignedTo(managerUser);
         }
 
         // create service log entry (same as raiseService)
@@ -122,7 +122,7 @@ public class TicketServiceService implements ITicketServiceService {
                         new RuntimeException("User with role " + role + " not found"));
     }
 
-    private User findLeastLoadedUser(String role) {
+    private User findLeastLoadedUserByRole(String role) {
 
         List<User> users = userRepository.findByRole(role);
 

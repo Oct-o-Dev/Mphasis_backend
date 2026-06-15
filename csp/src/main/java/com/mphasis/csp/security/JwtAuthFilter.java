@@ -31,21 +31,25 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // FIXED: CORRECT CRO API BYPASS
         String path = request.getServletPath();
 
-       /* if (path.equals("/api/cro/raise-service")) {
-            filterChain.doFilter(request, response);
-            return;
-        }*/
+        // Initialize empty token
+        String token = null;
 
-        //  Read Authorization Header
-        String authHeader = request.getHeader("Authorization");
+        String jwtFromCookie = jwtUtil.getJwtFromCookie(request);
+        if (jwtFromCookie != null) {
+            token = jwtFromCookie;
+        } else {
 
-        // If no token, skip
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
+            //  Read Authorization Header
+            String authHeader = request.getHeader("Authorization");
+
+            // If no token, skip
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            token = authHeader.substring(7);
         }
-
-        String token = authHeader.substring(7);
 
         try {
             String email = jwtUtil.extractEmail(token);

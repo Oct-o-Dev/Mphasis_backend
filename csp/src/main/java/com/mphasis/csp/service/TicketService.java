@@ -1,6 +1,7 @@
 package com.mphasis.csp.service;
 
 import com.mphasis.csp.dto.request.*;
+import com.mphasis.csp.dto.response.CroDashboardResponseDTO;
 import com.mphasis.csp.dto.response.TicketResponseDTO;
 import com.mphasis.csp.enums.TicketCategory;
 import com.mphasis.csp.exception.DebitCardNotFoundException;
@@ -85,7 +86,7 @@ public class TicketService implements ITicketService {
     }
 
     @Override
-    public List<TicketResponseDTO> getTickets(GetTicketsRequestDTO dto, String email) {
+    public List<TicketResponseDTO> getTickets(String requestDTO, String email) {
 
         User user = userRepository.findByEmailId(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -97,11 +98,26 @@ public class TicketService implements ITicketService {
     }
 
     @Override
-    public List<TicketResponseDTO> getAllTickets(GetAllTicketsRequestDTO dto) {
+    public List<TicketResponseDTO> getAllTickets(String dto) {
 
         return ticketRepository.findAll(Sort.by("dateOfSubmission").descending())
                 .stream()
                 .map(MapToTicketResponseDTO::map)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<TicketResponseDTO> getTicketsByStatus(String status) {
+        return ticketRepository.findByTicketStatus(
+                        com.mphasis.csp.enums.TicketStatus.valueOf(status)
+                )
+                .stream()
+                .map(MapToTicketResponseDTO::map)
+                .collect(Collectors.toList());
+    }
+    @Override
+    public List<CroDashboardResponseDTO> getCroDashboard() {
+        return ticketRepository.getCroDashboard();
+    }
 }
+

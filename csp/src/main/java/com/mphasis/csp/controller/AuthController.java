@@ -4,13 +4,11 @@ import com.mphasis.csp.service.ForgotPasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import com.mphasis.csp.dto.request.LoginRequestDTO;
 import com.mphasis.csp.dto.request.RegisterRequestDTO;
 import com.mphasis.csp.model.User;
 import com.mphasis.csp.security.JwtUtil;
 import com.mphasis.csp.service.UserService;
-
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -71,6 +69,8 @@ public class AuthController {
             cookie.setPath("/");
             cookie.setMaxAge(86400);
 
+            cookie.setDomain("localhost");
+
             response.addCookie(cookie);
             return token;
 
@@ -98,4 +98,20 @@ public class AuthController {
         service.resetPassword(token, newPassword);
         return ResponseEntity.ok("Password updated");
     }
+
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+
+        Cookie cookie = new Cookie("jwt", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false); // true if HTTPS
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // ✅ delete cookie
+
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok("Logged out successfully");
+    }
+
 }

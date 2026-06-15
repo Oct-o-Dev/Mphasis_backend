@@ -3,6 +3,8 @@ package com.mphasis.csp.service;
 import com.mphasis.csp.enums.ServiceAction;
 import com.mphasis.csp.enums.TicketStatus;
 import com.mphasis.csp.model.Ticket;
+import com.mphasis.csp.model.TicketService;
+import com.mphasis.csp.model.User;
 import com.mphasis.csp.repository.TicketRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -19,8 +21,9 @@ public class SlaMonitoringScheduler {
 
     private final TicketRepository ticketRepository;
     private final TicketServiceService ticketServiceService;
+    private final EscalationReportService escalationReportService;
 
-    @Scheduled(fixedRate = 300000) // 5 minutes
+    @Scheduled(fixedRate = 600000) // 10 minutes
     public void checkSlaAndEscalate() {
 
         System.out.println("SLA Scheduler Running...");
@@ -28,8 +31,7 @@ public class SlaMonitoringScheduler {
         List<Ticket> tickets = ticketRepository.findByTicketStatusIn(
                 List.of(
                         TicketStatus.PENDING_CUSTOMER,
-                        TicketStatus.PENDING_CRO,
-                        TicketStatus.PENDING_MANAGER
+                        TicketStatus.PENDING_CRO
                 )
         );
 
@@ -46,15 +48,22 @@ public class SlaMonitoringScheduler {
 
                 ServiceAction nextAction = getEscalationAction(ticket.getTicketStatus());
 
-                if (nextAction != null) {
+                if (nextAction == null) { continue; }
 
-                    // use existing service logic (VERY IMPORTANT)
-                    ticketServiceService.applySystemAction(ticket, nextAction);
+                // use existing service logic (VERY IMPORTANT)
+                TicketService escalationService = ticketServiceService.applySystemAction(ticket, nextAction);
 
-                    System.out.println(
-                            "🚨 Escalated Ticket ID: " + ticket.getTicketId()
-                    );
-                }
+                System.out.println(
+                        "🚨 Escalated Ticket ID: " + ticket.getTicketId()
+                );
+
+                // Audit LOG Insert
+                //Who triggered escalation -> system or assigned user
+                User user=ticket.getAssignedTo() != null
+                          ? ticket.getAssignedTo()
+                          :ticket.getUser();
+
+                escalationReportService.saveEscalation(escalationService, ticket, user);
             }
         }
     }

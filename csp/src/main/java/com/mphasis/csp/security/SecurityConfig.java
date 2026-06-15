@@ -45,9 +45,11 @@ public class SecurityConfig {
 
                         // Public endpoints
                         .requestMatchers("/api/auth/**").permitAll()
+                                .requestMatchers("/api/admin/**").permitAll()
+
                         .requestMatchers("/api/cards/**").hasAnyRole("CUSTOMER","CRO","ADMIN")
 
-                        // Role-based access
+////                        // Role-based access
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/cro/**").hasAnyRole("CRO", "ADMIN")
                         .requestMatchers("/api/customer/**").hasRole("CUSTOMER")
@@ -71,6 +73,7 @@ public class SecurityConfig {
 
         config.setAllowCredentials(true);
         config.setAllowedOrigins(List.of("http://127.0.0.1:5500" , "http://localhost:4200"));
+        config.setAllowedOrigins(List.of("http://localhost:4200"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of("*"));
 

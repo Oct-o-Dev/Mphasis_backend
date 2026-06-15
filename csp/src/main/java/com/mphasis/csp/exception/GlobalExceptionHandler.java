@@ -14,4 +14,18 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.FORBIDDEN)
                 .body("This action type is not allowed on this ticket status.");
     }
+
+    @ExceptionHandler(DebitCardNotFoundException.class)
+    public ResponseEntity<?> handleDebitCardNotFound(DebitCardNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body("This debit card does not belong to logged in user");
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body("User not found");
+    }
 }

@@ -10,4 +10,5 @@ public class UserProfileResponseDTO {
     private String firstName;
     private String lastName;
     private String emailId;
+    private String role;
 }

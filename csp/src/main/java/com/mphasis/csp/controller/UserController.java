@@ -29,6 +29,7 @@ public class UserController {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .emailId(user.getEmailId())
+                .role(user.getRole())
                 .build();
 
         return ResponseEntity.ok(dto);

@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -77,12 +78,12 @@ public class TicketServiceService implements ITicketServiceService {
 
         //Assignment logic added
         if(action == ServiceAction.ESCALATE_TO_CRO){
-            User croUser=getUserByRole("CRO");
+            User croUser=findLeastLoadedUser("CRO");
             ticket.setAssignedTo(croUser);
         }
         else if(action==ServiceAction.ESCALATE_TO_MANAGER){
-            User managerUser=getUserByRole("MANAGER");
-            ticket.setAssignedTo(managerUser);
+            User adminUser=findLeastLoadedUser("ADMIN");
+            ticket.setAssignedTo(adminUser);
         }
 
         // create service log entry (same as raiseService)
@@ -119,6 +120,30 @@ public class TicketServiceService implements ITicketServiceService {
                 .findFirst()
                 .orElseThrow(() ->
                         new RuntimeException("User with role " + role + " not found"));
+    }
+
+    private User findLeastLoadedUser(String role) {
+
+        List<User> users = userRepository.findByRole(role);
+
+        if (users.isEmpty()) {
+            throw new RuntimeException("No users found for role: " + role);
+        }
+
+        User selectedUser = users.get(0);
+        long minTickets = ticketRepository.countByAssignedTo(selectedUser);
+
+        for (User user : users) {
+
+            long ticketCount = ticketRepository.countByAssignedTo(user);
+
+            if (ticketCount < minTickets) {
+                minTickets = ticketCount;
+                selectedUser = user;
+            }
+        }
+
+        return selectedUser;
     }
 
 }

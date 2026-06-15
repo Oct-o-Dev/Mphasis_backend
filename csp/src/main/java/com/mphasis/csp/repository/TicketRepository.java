@@ -35,4 +35,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     List<CroDashboardResponseDTO> getCroDashboard();
 
     List<Ticket> findByTicketStatusIn(List<TicketStatus> statuses);
+
+    //NEW METHOD FOR LOAD BALANCING
+    long countByAssignedTo(User user);
 }

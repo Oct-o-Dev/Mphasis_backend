@@ -6,8 +6,11 @@ import com.mphasis.csp.model.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmailId(String emailId);
+
+    List<User>findByRole(String role);
 }

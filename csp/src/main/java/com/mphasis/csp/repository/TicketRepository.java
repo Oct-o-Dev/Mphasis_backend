@@ -17,7 +17,8 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
     Optional<Ticket> findByTicketIdAndUser(Integer ticketId, User user);
     List<Ticket> findByTicketStatus(TicketStatus status);
-@Query("SELECT new com.mphasis.csp.dto.response.CroDashboardResponseDTO(" +
+
+    @Query("SELECT new com.mphasis.csp.dto.response.CroDashboardResponseDTO(" +
         "ts.cro.id, " +
         "ts.cro.username, " +
 
@@ -31,5 +32,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
         "FROM TicketService ts " +
         "WHERE ts.cro.role = 'CRO' " +
         "GROUP BY ts.cro.id, ts.cro.username")
-List<CroDashboardResponseDTO> getCroDashboard();
+    List<CroDashboardResponseDTO> getCroDashboard();
+
+    List<Ticket> findByTicketStatusIn(List<TicketStatus> statuses);
 }

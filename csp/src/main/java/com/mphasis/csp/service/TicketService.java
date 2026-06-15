@@ -3,8 +3,12 @@ package com.mphasis.csp.service;
 import com.mphasis.csp.dto.request.*;
 import com.mphasis.csp.dto.response.CroDashboardResponseDTO;
 import com.mphasis.csp.dto.response.TicketResponseDTO;
+import com.mphasis.csp.enums.TicketCategory;
+import com.mphasis.csp.exception.DebitCardNotFoundException;
+import com.mphasis.csp.exception.UserNotFoundException;
 import com.mphasis.csp.model.Ticket;
 import com.mphasis.csp.model.User;
+import com.mphasis.csp.repository.DebitCardRepository;
 import com.mphasis.csp.repository.TicketRepository;
 import com.mphasis.csp.repository.UserRepository;
 import com.mphasis.csp.repository.TicketServiceRepository;
@@ -31,12 +35,32 @@ public class TicketService implements ITicketService {
     @Autowired
     private final TicketServiceRepository ticketServiceRepository;
 
+    @Autowired
+    private final DebitCardRepository debitCardRepository;
+
     @Override
     public TicketResponseDTO raiseTicket(RaiseTicketRequestDTO dto, String email) {
 
         User user = userRepository.findByEmailId(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User is not found"));
 
+        // If it's a debit card request, validate that Debit Card belongs to user
+        String debitCardLast4Digits = dto.getDebitCardLast4Digits();
+        if (
+                dto.getCategory() == TicketCategory.DEBITCARDSERVICE &&
+                debitCardRepository.findByUser(user)
+                        .stream()
+                        .noneMatch(debitCard -> {
+                            String number = debitCard.getDebitCardNumber();
+                            return number != null &&
+                                    number.length() >= 4 &&
+                                    number.substring(number.length() - 4)
+                                            .equals(debitCardLast4Digits);
+                })) {
+            throw new DebitCardNotFoundException(user, debitCardLast4Digits);
+        }
+
+        // If everything is verified, create ticket and send to DB
         Ticket ticket = Ticket.builder()
                 .user(user)
                 .ticketCategory(dto.getCategory())

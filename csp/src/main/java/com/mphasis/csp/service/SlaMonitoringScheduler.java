@@ -44,8 +44,6 @@ public class SlaMonitoringScheduler {
 
             if (minutesElapsed >= slaMinutes) {
 
-                System.out.println("Ticket with ticket id " + ticket.getTicketId() + " and category " + ticket.getTicketStatus() + " breached SLA.");
-
                 ServiceAction nextAction = getEscalationAction(ticket.getTicketStatus());
 
                 if (nextAction != null) {

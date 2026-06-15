@@ -1,8 +1,6 @@
 package com.mphasis.csp.controller;
 
-import com.mphasis.csp.dto.request.GetAllTicketsRequestDTO;
 import com.mphasis.csp.dto.request.GetTicketRequestDTO;
-import com.mphasis.csp.dto.request.GetTicketsRequestDTO;
 import com.mphasis.csp.dto.request.RaiseTicketRequestDTO;
 import com.mphasis.csp.dto.response.TicketResponseDTO;
 import com.mphasis.csp.service.ITicketService;
@@ -33,7 +31,7 @@ public class TicketController {
     }
 
     // CUSTOMER : get their single ticket
-    @PostMapping("/customer/getTicket")
+    @GetMapping("/customer/getTicket")
     public TicketResponseDTO getTicket(
             @Valid @RequestBody GetTicketRequestDTO requestDTO,
             Authentication authentication) {
@@ -43,19 +41,19 @@ public class TicketController {
     }
 
     // CUSTOMER : get all their tickets
-    @PostMapping("/customer/getTickets")
+    @GetMapping("/customer/getTickets")
     public List<TicketResponseDTO> getTickets(
-            @Valid @RequestBody GetTicketsRequestDTO requestDTO,
+            String request,
             Authentication authentication) {
 
         String email = authentication.getName();
-        return ticketService.getTickets(requestDTO, email);
+        return ticketService.getTickets(request, email);
     }
 
     // CRO / MANAGER : all tickets
-    @PostMapping("/cro/getTickets")
+    @GetMapping("/cro/getTickets")
     public List<TicketResponseDTO> getAllTickets(
-            @Valid @RequestBody GetAllTicketsRequestDTO requestDTO) {
+            String requestDTO) {
 
         return ticketService.getAllTickets(requestDTO);
     }

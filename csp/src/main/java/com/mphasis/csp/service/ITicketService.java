@@ -11,7 +11,7 @@ public interface ITicketService {
 
     TicketResponseDTO getTicket(GetTicketRequestDTO requestDTO, String email);
 
-    List<TicketResponseDTO> getTickets(GetTicketsRequestDTO requestDTO, String email);
+    List<TicketResponseDTO> getTickets(String requestDTO, String email);
 
-    List<TicketResponseDTO> getAllTickets(GetAllTicketsRequestDTO requestDTO);
+    List<TicketResponseDTO> getAllTickets(String requestDTO);
 }

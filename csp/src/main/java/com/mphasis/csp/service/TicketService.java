@@ -61,7 +61,7 @@ public class TicketService implements ITicketService {
     }
 
     @Override
-    public List<TicketResponseDTO> getTickets(GetTicketsRequestDTO dto, String email) {
+    public List<TicketResponseDTO> getTickets(String requestDTO, String email) {
 
         User user = userRepository.findByEmailId(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -73,7 +73,7 @@ public class TicketService implements ITicketService {
     }
 
     @Override
-    public List<TicketResponseDTO> getAllTickets(GetAllTicketsRequestDTO dto) {
+    public List<TicketResponseDTO> getAllTickets(String dto) {
 
         return ticketRepository.findAll(Sort.by("dateOfSubmission").descending())
                 .stream()

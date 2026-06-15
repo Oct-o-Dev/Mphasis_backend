@@ -46,7 +46,6 @@ public class Ticket {
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    // ✅ ONLY ONE STATUS FIELD (KEEP THIS)
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
@@ -58,27 +57,17 @@ public class Ticket {
     @Column(name = "date_of_update")
     private LocalDateTime dateOfUpdate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_to")
+    private User assignedTo;
+
     @OneToMany(
             mappedBy = "ticket",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assigned_to")
-    private User assignedTo;
-
-
-//    @Builder.Default
-//    private List<TicketService> services = new ArrayList<>();
-@OneToMany(
-        mappedBy = "ticket",
-        cascade = CascadeType.ALL,
-        orphanRemoval = true
-)
-@Builder.Default
-private List<TicketService> services = new ArrayList<>();
+    @Builder.Default
+    private List<TicketService> services = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {
@@ -91,8 +80,4 @@ private List<TicketService> services = new ArrayList<>();
     public void preUpdate() {
         dateOfUpdate = LocalDateTime.now();
     }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assigned_to")
-    private User assignedTo;
 }

@@ -69,6 +69,8 @@ public class AuthController {
             cookie.setPath("/");
             cookie.setMaxAge(86400);
 
+            cookie.setDomain("localhost");
+
             response.addCookie(cookie);
             return token;
 
@@ -96,4 +98,20 @@ public class AuthController {
         service.resetPassword(token, newPassword);
         return ResponseEntity.ok("Password updated");
     }
+
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+
+        Cookie cookie = new Cookie("jwt", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false); // true if HTTPS
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // ✅ delete cookie
+
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok("Logged out successfully");
+    }
+
 }

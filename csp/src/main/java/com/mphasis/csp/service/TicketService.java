@@ -1,6 +1,7 @@
 package com.mphasis.csp.service;
 
 import com.mphasis.csp.dto.request.*;
+import com.mphasis.csp.dto.response.CroDashboardResponseDTO;
 import com.mphasis.csp.dto.response.TicketResponseDTO;
 import com.mphasis.csp.enums.TicketCategory;
 import com.mphasis.csp.exception.DebitCardNotFoundException;
@@ -104,4 +105,19 @@ public class TicketService implements ITicketService {
                 .map(MapToTicketResponseDTO::map)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<TicketResponseDTO> getTicketsByStatus(String status) {
+        return ticketRepository.findByTicketStatus(
+                        com.mphasis.csp.enums.TicketStatus.valueOf(status)
+                )
+                .stream()
+                .map(MapToTicketResponseDTO::map)
+                .collect(Collectors.toList());
+    }
+    @Override
+    public List<CroDashboardResponseDTO> getCroDashboard() {
+        return ticketRepository.getCroDashboard();
+    }
 }
+

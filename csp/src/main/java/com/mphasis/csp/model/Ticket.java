@@ -1,5 +1,5 @@
-package com.mphasis.csp.model;
 
+package com.mphasis.csp.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mphasis.csp.enums.*;
+import com.mphasis.csp.enums.TicketCategory;
+import com.mphasis.csp.enums.TicketSubcategory;
+import com.mphasis.csp.enums.TicketStatus;
 
 @Entity
 @Table(name = "requests")
@@ -33,17 +35,18 @@ public class Ticket {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false, length = 50)
-    private com.mphasis.csp.enums.TicketCategory ticketCategory;
+    private TicketCategory ticketCategory;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "subcategory", nullable = false, length = 50)
-    private com.mphasis.csp.enums.TicketSubcategory ticketSubcategory;
+    private TicketSubcategory ticketSubcategory;
 
     @NotBlank
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
+    // ✅ ONLY ONE STATUS FIELD (KEEP THIS)
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
@@ -60,8 +63,22 @@ public class Ticket {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    @Builder.Default
-    private List<TicketService> services = new ArrayList<>();
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_to")
+    private User assignedTo;
+
+
+//    @Builder.Default
+//    private List<TicketService> services = new ArrayList<>();
+@OneToMany(
+        mappedBy = "ticket",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+)
+@Builder.Default
+private List<TicketService> services = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {

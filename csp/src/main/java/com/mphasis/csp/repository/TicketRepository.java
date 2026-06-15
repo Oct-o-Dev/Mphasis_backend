@@ -1,5 +1,6 @@
 package com.mphasis.csp.repository;
 
+import com.mphasis.csp.enums.TicketStatus;
 import com.mphasis.csp.model.Ticket;
 import com.mphasis.csp.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,4 +15,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     List<Ticket> findByUser(User user);
 
     Optional<Ticket> findByTicketIdAndUser(Integer ticketId, User user);
+
+    List<Ticket> findByTicketStatusIn(List<TicketStatus> statuses);
+
 }

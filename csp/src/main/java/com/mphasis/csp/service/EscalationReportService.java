@@ -2,6 +2,7 @@ package com.mphasis.csp.service;
 
 import com.mphasis.csp.model.EscalationReport;
 import com.mphasis.csp.model.Ticket;
+import com.mphasis.csp.model.TicketService;
 import com.mphasis.csp.model.User;
 import com.mphasis.csp.repository.EscalationReportRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class EscalationReportService {
 
     private final EscalationReportRepository repository;
 
-    public void saveEscalation(Ticket ticket, User user) {
+    public void saveEscalation(TicketService service, Ticket ticket, User user) {
 
         // avoid duplicate insert within short interval
         Optional<EscalationReport> last =
@@ -30,6 +31,7 @@ public class EscalationReportService {
 
         EscalationReport report =
                 EscalationReport.builder()
+                        .service(service)
                         .ticket(ticket)
                         .user(user)
                         .dateOfEscalation(LocalDateTime.now())

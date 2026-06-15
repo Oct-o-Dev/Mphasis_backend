@@ -6,6 +6,7 @@ import com.mphasis.csp.enums.ServiceAction;
 import com.mphasis.csp.enums.TicketStatus;
 import com.mphasis.csp.exception.InvalidTicketStatusUpdateException;
 import com.mphasis.csp.model.Ticket;
+import com.mphasis.csp.model.TicketService;
 import com.mphasis.csp.model.User;
 import com.mphasis.csp.repository.TicketRepository;
 import com.mphasis.csp.repository.TicketServiceRepository;
@@ -68,7 +69,7 @@ public class TicketServiceService implements ITicketServiceService {
     }
 
     // SYSTEM_LEVEL ACTION(USED BY SCHEDULER)
-    public void applySystemAction(Ticket ticket, ServiceAction action) {
+    public TicketService applySystemAction(Ticket ticket, ServiceAction action) {
 
         // get current status
         TicketStatus oldStatus = ticket.getTicketStatus();
@@ -92,7 +93,7 @@ public class TicketServiceService implements ITicketServiceService {
 
         service.setTicket(ticket);
         service.setServiceAction(action);
-        service.setComment("Auto escalation by SLA");
+        service.setComment("Auto escalation by SLA Admin");
         service.setOldStatus(oldStatus);
         service.setNewStatus(newStatus);
         service.setDateOfService(LocalDateTime.now());
@@ -109,6 +110,8 @@ public class TicketServiceService implements ITicketServiceService {
         ticket.setTicketStatus(newStatus);
 
         ticketRepository.save(ticket);
+
+        return service;
     }
 
     // HELPER METHOD → FIND USER BY ROLE

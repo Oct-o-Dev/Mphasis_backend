@@ -16,14 +16,19 @@ public class EscalationReport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;   // ✅ REQUIRED
+
+    // Service Reference (unique)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_id", unique = true)
+    private TicketService service;
 
     // Ticket reference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticket_id", nullable = false)
     private Ticket ticket;
 
-    // User who triggered escalation (system / CRO)
+    // User reference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

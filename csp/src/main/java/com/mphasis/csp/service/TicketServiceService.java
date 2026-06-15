@@ -75,6 +75,16 @@ public class TicketServiceService implements ITicketServiceService {
         // use existing state machine logic (VERY IMPORTANT)
         TicketStatus newStatus = oldStatus.getStatusUpdate(action);
 
+        //Assignment logic added
+        if(action == ServiceAction.ESCALATE_TO_CRO){
+            User croUser=getUserByRole("CRO");
+            ticket.setAssignedTo(croUser);
+        }
+        else if(action==ServiceAction.ESCALATE_TO_MANAGER){
+            User managerUser=getUserByRole("MANAGER");
+            ticket.setAssignedTo(managerUser);
+        }
+
         // create service log entry (same as raiseService)
         com.mphasis.csp.model.TicketService service =
                 new com.mphasis.csp.model.TicketService();
@@ -87,7 +97,7 @@ public class TicketServiceService implements ITicketServiceService {
         service.setDateOfService(LocalDateTime.now());
 
         // system user (optional fallback if needed)
-        User systemUser = ticket.getUser(); // fallback (since no email in scheduler)
+        User systemUser = ticket.getUser();
 
         service.setCro(systemUser);
 
@@ -98,6 +108,17 @@ public class TicketServiceService implements ITicketServiceService {
         ticket.setTicketStatus(newStatus);
 
         ticketRepository.save(ticket);
+    }
+
+    // HELPER METHOD → FIND USER BY ROLE
+    private User getUserByRole(String role) {
+
+        return userRepository.findAll()
+                .stream()
+                .filter(user -> role.equalsIgnoreCase(user.getRole()))
+                .findFirst()
+                .orElseThrow(() ->
+                        new RuntimeException("User with role " + role + " not found"));
     }
 
 }

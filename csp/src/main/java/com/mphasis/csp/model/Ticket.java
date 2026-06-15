@@ -74,4 +74,8 @@ public class Ticket {
     public void preUpdate() {
         dateOfUpdate = LocalDateTime.now();
     }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_to")
+    private User assignedTo;
 }

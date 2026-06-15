@@ -14,6 +14,9 @@ import com.mphasis.csp.repository.UserRepository;
 import com.mphasis.csp.util.MapToTicketResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -34,6 +37,22 @@ public class TicketServiceService implements ITicketServiceService {
 
     @Override
     public TicketResponseDTO raiseService(RaiseServiceRequestDTO dto, String email) throws InvalidTicketStatusUpdateException {
+
+        String role = SecurityContextHolder.getContext().getAuthentication()
+                .getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse("");
+
+        if ("ROLE_CUSTOMER".equals(role)) {
+            if (!(dto.getServiceAction() == ServiceAction.COMMENT ||
+                    dto.getServiceAction() == ServiceAction.ESCALATE_TO_CRO)) {
+
+                throw new InvalidTicketStatusUpdateException(
+                        "CUSTOMER can only COMMENT or ESCALATE TO CRO"
+                );
+            }
+        }
 
         //  Fetch old status from linked ticket
         Ticket ticket = ticketRepository.findById(dto.getTicketId())

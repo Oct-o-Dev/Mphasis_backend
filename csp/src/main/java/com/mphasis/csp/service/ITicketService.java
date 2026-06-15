@@ -1,6 +1,7 @@
 package com.mphasis.csp.service;
 
 import com.mphasis.csp.dto.request.*;
+import com.mphasis.csp.dto.response.CroDashboardResponseDTO;
 import com.mphasis.csp.dto.response.TicketResponseDTO;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface ITicketService {
     List<TicketResponseDTO> getTickets(GetTicketsRequestDTO requestDTO, String email);
 
     List<TicketResponseDTO> getAllTickets(GetAllTicketsRequestDTO requestDTO);
+    List<TicketResponseDTO> getTicketsByStatus(String status);
+    List<CroDashboardResponseDTO> getCroDashboard();
 }

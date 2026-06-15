@@ -2,6 +2,7 @@ package com.mphasis.csp.service;
 
 import com.mphasis.csp.dto.request.RaiseServiceRequestDTO;
 import com.mphasis.csp.dto.response.TicketResponseDTO;
+import com.mphasis.csp.enums.ServiceAction;
 import com.mphasis.csp.enums.TicketStatus;
 import com.mphasis.csp.exception.InvalidTicketStatusUpdateException;
 import com.mphasis.csp.model.Ticket;
@@ -64,4 +65,60 @@ public class TicketServiceService implements ITicketServiceService {
 
         return MapToTicketResponseDTO.map(updated);
     }
+
+    // SYSTEM_LEVEL ACTION(USED BY SCHEDULER)
+    public void applySystemAction(Ticket ticket, ServiceAction action) {
+
+        // get current status
+        TicketStatus oldStatus = ticket.getTicketStatus();
+
+        // use existing state machine logic (VERY IMPORTANT)
+        TicketStatus newStatus = oldStatus.getStatusUpdate(action);
+
+        //Assignment logic added
+        if(action == ServiceAction.ESCALATE_TO_CRO){
+            User croUser=getUserByRole("CRO");
+            ticket.setAssignedTo(croUser);
+        }
+        else if(action==ServiceAction.ESCALATE_TO_MANAGER){
+            User managerUser=getUserByRole("MANAGER");
+            ticket.setAssignedTo(managerUser);
+        }
+
+        // create service log entry (same as raiseService)
+        com.mphasis.csp.model.TicketService service =
+                new com.mphasis.csp.model.TicketService();
+
+        service.setTicket(ticket);
+        service.setServiceAction(action);
+        service.setComment("Auto escalation by SLA");
+        service.setOldStatus(oldStatus);
+        service.setNewStatus(newStatus);
+        service.setDateOfService(LocalDateTime.now());
+
+        // system user (optional fallback if needed)
+        User systemUser = ticket.getUser();
+
+        service.setCro(systemUser);
+
+        // save service record
+        ticketServiceRepository.save(service);
+
+        // update ticket status
+        ticket.setTicketStatus(newStatus);
+
+        ticketRepository.save(ticket);
+    }
+
+    // HELPER METHOD → FIND USER BY ROLE
+    private User getUserByRole(String role) {
+
+        return userRepository.findAll()
+                .stream()
+                .filter(user -> role.equalsIgnoreCase(user.getRole()))
+                .findFirst()
+                .orElseThrow(() ->
+                        new RuntimeException("User with role " + role + " not found"));
+    }
+
 }

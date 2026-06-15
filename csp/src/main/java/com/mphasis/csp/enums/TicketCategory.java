@@ -4,5 +4,10 @@ public enum TicketCategory {
     DEBITCARDSERVICE,
     INTERNETBANKING,
     ACCOUNTSERVICE,
-    COMPLAINT
-}
+    COMPLAINT;
+
+    public int getSLAMinutes() {
+        return 1; // same SLA for all
+    }
+
+    }

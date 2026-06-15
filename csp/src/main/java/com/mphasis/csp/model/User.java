@@ -1,11 +1,6 @@
 package com.mphasis.csp.model;
-
-
-
 import jakarta.persistence.*;
 import lombok.Data;
-
-
 @Data
 @Table
 @Entity(name = "users")
@@ -16,7 +11,7 @@ public class User {
     private Long userId;
 
 
-    @Column(name = "username")   // ✅ Explicit mapping (fixes your issue)
+    @Column(name = "username")
     private String username;
 
 

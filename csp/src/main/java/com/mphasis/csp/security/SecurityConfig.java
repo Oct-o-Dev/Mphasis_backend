@@ -45,9 +45,11 @@ public class SecurityConfig {
 
                         // Public endpoints
                         .requestMatchers("/api/auth/**").permitAll()
+                                .requestMatchers("/api/admin/**").permitAll()
+
                         .requestMatchers("/api/cards/**").hasAnyRole("CUSTOMER","CRO","ADMIN")
 
-                        // Role-based access
+////                        // Role-based access
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/cro/**").hasAnyRole("CRO", "ADMIN")
                         .requestMatchers("/api/customer/**").hasRole("CUSTOMER")

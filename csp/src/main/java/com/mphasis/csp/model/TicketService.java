@@ -26,7 +26,7 @@ public class TicketService {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticket_id", nullable = false)
-    private com.mphasis.csp.model.Ticket ticket;
+    private Ticket ticket;
 
     @NotNull
     @Enumerated(EnumType.STRING)

@@ -2,6 +2,7 @@ package com.mphasis.csp.controller;
 
 import com.mphasis.csp.dto.request.GetTicketRequestDTO;
 import com.mphasis.csp.dto.request.RaiseTicketRequestDTO;
+import com.mphasis.csp.dto.response.TicketHistoryResponseDTO;
 import com.mphasis.csp.dto.response.TicketResponseDTO;
 import com.mphasis.csp.service.ITicketService;
 import jakarta.validation.Valid;
@@ -37,7 +38,19 @@ public class TicketController {
             Authentication authentication) {
 
         String email = authentication.getName();
-        return ticketService.getTicket(requestDTO, email);
+        return ticketService.getTicket(requestDTO.getTicketId(), email);
+    }
+
+    @GetMapping({
+            "/customer/getTicketHistory",
+            "/cro/getTicketHistory",
+    })
+    public TicketHistoryResponseDTO getTicketHistory(
+            @Valid @RequestBody GetTicketRequestDTO requestDTO,
+            Authentication authentication
+    ) {
+        String email = authentication.getName();
+        return ticketService.getTicketHistory(requestDTO.getTicketId(), email);
     }
 
     // CUSTOMER : get all their tickets

@@ -38,6 +38,9 @@ public class TicketService implements ITicketService {
     @Autowired
     private final DebitCardRepository debitCardRepository;
 
+    @Autowired
+    private ITicketServiceService ticketServiceService;
+
     @Override
     public TicketResponseDTO raiseTicket(RaiseTicketRequestDTO dto, String email) {
 
@@ -66,6 +69,7 @@ public class TicketService implements ITicketService {
                 .ticketCategory(dto.getCategory())
                 .ticketSubcategory(dto.getSubcategory())
                 .description(dto.getDescription())
+                .assignedTo(ticketServiceService.findLeastLoadedUserByRole("CRO"))
                 .build();
 
         Ticket saved = ticketRepository.save(ticket);

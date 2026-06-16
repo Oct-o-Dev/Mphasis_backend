@@ -134,7 +134,7 @@ public class TicketServiceService implements ITicketServiceService {
     }
 
     // HELPER METHOD → FIND USER BY ROLE
-    private User getUserByRole(String role) {
+    public User getUserByRole(String role) {
 
         return userRepository.findAll()
                 .stream()
@@ -144,7 +144,7 @@ public class TicketServiceService implements ITicketServiceService {
                         new RuntimeException("User with role " + role + " not found"));
     }
 
-    private User findLeastLoadedUserByRole(String role) {
+    public User findLeastLoadedUserByRole(String role) {
 
         List<User> users = userRepository.findByRole(role);
 

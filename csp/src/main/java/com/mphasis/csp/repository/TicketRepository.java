@@ -40,5 +40,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     //NEW METHOD FOR LOAD BALANCING
     long countByAssignedTo(User user);
 
-    @Query("SELECT r FROM requests r WHERE r.assignedTo.emailId = :email")
+    @Query("SELECT t FROM Ticket t WHERE t.assignedTo.emailId = :email")
     List<Ticket> findTicketsByAssignedUserEmail(@Param("email") String email);}

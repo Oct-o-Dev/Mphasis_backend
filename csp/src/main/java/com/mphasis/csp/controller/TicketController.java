@@ -41,20 +41,31 @@ public class TicketController {
     }
 
     // CUSTOMER : get all their tickets
-    @GetMapping("/customer/getTickets")
+    @GetMapping("/customer/getTicketsRaisedBy")
     public List<TicketResponseDTO> getTickets(
             String request,
             Authentication authentication) {
 
         String email = authentication.getName();
-        return ticketService.getTickets(request, email);
+        return ticketService.getTicketsRaisedBy(email);
     }
 
-    // CRO / MANAGER : all tickets
-    @GetMapping("/cro/getTickets")
-    public List<TicketResponseDTO> getAllTickets(
-            String requestDTO) {
+    // CRO / MANAGER : all tickets assigned to that CRO
+    @GetMapping("/cro/getTicketsAssignedTo")
+    public List<TicketResponseDTO> getAllTicketsAssignedToCRO(
+            String request,
+            Authentication authentication) {
 
-        return ticketService.getAllTickets(requestDTO);
+        String email = authentication.getName();
+        return ticketService.getTicketsAssignedTo(email);
+    }
+
+    // MANAGER : get ALL the tickets
+    @GetMapping("/admin/getAllTickets")
+    public List<TicketResponseDTO> getAllTickets(
+            String request,
+            Authentication authentication
+    ) {
+        return ticketService.getAllTickets();
     }
 }

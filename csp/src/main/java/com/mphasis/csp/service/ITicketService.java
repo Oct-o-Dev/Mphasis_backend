@@ -10,8 +10,9 @@ public interface ITicketService {
 
     TicketResponseDTO raiseTicket(RaiseTicketRequestDTO requestDTO, String email);
     TicketResponseDTO getTicket(GetTicketRequestDTO requestDTO, String email);
-    List<TicketResponseDTO> getTickets(String requestDTO, String email);
-    List<TicketResponseDTO> getAllTickets(String requestDTO);
+    List<TicketResponseDTO> getTicketsRaisedBy(String email);
+    List<TicketResponseDTO> getTicketsAssignedTo(String email);
+    List<TicketResponseDTO> getAllTickets();
     List<TicketResponseDTO> getTicketsByStatus(String status);
     List<CroDashboardResponseDTO> getCroDashboard();
 }

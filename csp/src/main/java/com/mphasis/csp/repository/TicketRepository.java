@@ -16,6 +16,13 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
     List<Ticket> findByUser(User user);
 
+    @Query("SELECT t FROM Ticket t WHERE t.ticketId = :id AND t.user.emailId = :email")
+    Optional<Ticket> findByIdAndUserEmailId(Integer id, String email);
+
+    @Query("SELECT t FROM Ticket t WHERE t.ticketId = :id AND t.assignedTo.emailId = :email")
+    Optional<Ticket> findByIdAndAssignedToEmailId(Integer id, String email);
+
+
     Optional<Ticket> findByTicketIdAndUser(Integer ticketId, User user);
     List<Ticket> findByTicketStatus(TicketStatus status);
 
@@ -41,4 +48,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     long countByAssignedTo(User user);
 
     @Query("SELECT t FROM Ticket t WHERE t.assignedTo.emailId = :email")
-    List<Ticket> findTicketsByAssignedUserEmail(@Param("email") String email);}
+    List<Ticket> findTicketsByAssignedUserEmail(@Param("email") String email);
+}

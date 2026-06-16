@@ -2,6 +2,7 @@ package com.mphasis.csp.service;
 
 import com.mphasis.csp.dto.request.*;
 import com.mphasis.csp.dto.response.CroDashboardResponseDTO;
+import com.mphasis.csp.dto.response.TicketHistoryResponseDTO;
 import com.mphasis.csp.dto.response.TicketResponseDTO;
 import com.mphasis.csp.enums.TicketCategory;
 import com.mphasis.csp.exception.DebitCardNotFoundException;
@@ -16,10 +17,13 @@ import com.mphasis.csp.util.MapToTicketResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,16 +81,50 @@ public class TicketService implements ITicketService {
     }
 
     @Override
-    public TicketResponseDTO getTicket(GetTicketRequestDTO dto, String email) {
+    public TicketResponseDTO getTicket(Integer ticketId, String email) {
 
         User user = userRepository.findByEmailId(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Ticket ticket = ticketRepository
-                .findByTicketIdAndUser(dto.getTicketId(), user)
+                .findByTicketIdAndUser(ticketId, user)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
         return MapToTicketResponseDTO.map(ticket);
+    }
+
+    @Override
+    public TicketHistoryResponseDTO getTicketHistory(Integer ticketId, Authentication authentication) {
+
+        String email = authentication.getName();
+
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        boolean isCustomer = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_CUSTOMER"));
+
+        boolean isCRO = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_CRO"));
+
+        Optional<Ticket> ticketOpt;
+
+        if (isAdmin) {
+            ticketOpt = ticketRepository.findById(ticketId);
+        } else if (isCustomer) {
+            ticketOpt = ticketRepository.findByIdAndUserEmailId(ticketId, email);
+        } else if (isCRO) {
+            ticketOpt = ticketRepository.findByIdAndAssignedToEmailId(ticketId, email);
+        } else {
+            throw new AccessDeniedException("Unauthorized role");
+        }
+
+        Ticket ticket = ticketOpt
+                .orElseThrow(() -> new AccessDeniedException("Access denied or ticket not found"));
+        List<com.mphasis.csp.model.TicketService> history =
+                ticketServiceRepository.findTicketServiceHistory(ticketId);
+
+        return TicketHistoryResponseDTO.mapToDTO(ticket, history);
     }
 
     @Override

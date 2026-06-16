@@ -32,25 +32,25 @@ public class TicketController {
     }
 
     // CUSTOMER : get their single ticket
-    @GetMapping("/customer/getTicket")
+    @GetMapping("/customer/getTicket/{ticketId}")
     public TicketResponseDTO getTicket(
-            @Valid @RequestBody GetTicketRequestDTO requestDTO,
+            @PathVariable Integer ticketId,
             Authentication authentication) {
 
         String email = authentication.getName();
-        return ticketService.getTicket(requestDTO.getTicketId(), email);
+        return ticketService.getTicket(ticketId, email);
     }
 
     @GetMapping({
-            "/customer/getTicketHistory",
-            "/cro/getTicketHistory",
+            "/customer/getTicketHistory/{ticketId}",
+            "/cro/getTicketHistory/{ticketId}",
+            "/admin/getTicketHistory/{ticketId}"
     })
     public TicketHistoryResponseDTO getTicketHistory(
-            @Valid @RequestBody GetTicketRequestDTO requestDTO,
+            @PathVariable  Integer ticketId,
             Authentication authentication
     ) {
-        String email = authentication.getName();
-        return ticketService.getTicketHistory(requestDTO.getTicketId(), email);
+        return ticketService.getTicketHistory(ticketId, authentication);
     }
 
     // CUSTOMER : get all their tickets

@@ -23,7 +23,7 @@ public class SlaMonitoringScheduler {
     private final TicketServiceService ticketServiceService;
     private final EscalationReportService escalationReportService;
 
-    @Scheduled(fixedRate = 600000) // 10 minutes
+    @Scheduled(fixedRate = 3600000) // 1 hour
     public void checkSlaAndEscalate() {
 
         System.out.println("SLA Scheduler Running...");

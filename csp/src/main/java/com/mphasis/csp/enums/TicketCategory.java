@@ -7,6 +7,6 @@ public enum TicketCategory {
     COMPLAINT;
 
     public int getSLAMinutes() {
-        return 60; // same SLA for all
+        return 600; // same SLA for all
     }
 }
